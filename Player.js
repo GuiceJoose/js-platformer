@@ -8,7 +8,10 @@ export default class Player {
     this.y = this.canvasHeight - this.height;
     this.velX = 0;
     this.velY = 0;
+    this.isOnGround = true;
+    this.jumps = 0;
     this.weight = 1;
+    this.friction = 0.25;
   }
   draw(context) {
     context.fillStyle = "white";
@@ -16,47 +19,48 @@ export default class Player {
   }
   update(input) {
     // Input responses
-    if (input.keys.indexOf("ArrowRight") > -1) {
+    if (input.keys.ArrowRight.pressed === true) {
       this.velX = 5;
     }
-    if (input.keys.indexOf("ArrowLeft") > -1) {
+    if (input.keys.ArrowLeft.pressed === true) {
       this.velX = -5;
     }
+
     if (
-      input.keys.indexOf("ArrowRight") === -1 &&
-      input.keys.indexOf("ArrowLeft") === -1
+      input.keys.ArrowUp.pressed === true &&
+      input.keys.ArrowUp.released === this.jumps &&
+      this.isOnGround === true
     ) {
-      this.velX = 0;
-    }
-
-    if (input.keys.indexOf("ArrowUp") > -1 && this.isOnGround()) {
+      this.isOnGround = false;
       this.velY = -15;
+      ++this.jumps;
     }
 
-    if (input.keys.indexOf("w") > -1) {
+    if (input.keys.w.pressed === true) {
       this.weight = 0.35;
     } else this.weight = 1;
 
     this.x += this.velX;
+    this.y += this.velY;
+
     // Boundary conditions
     if (this.x < 0) {
       this.x = 0;
-    } else if (this.x > this.canvasWidth - this.width) {
-      this.x = this.canvasWidth - this.width;
+    } else if (this.x > 500) {
+      this.x = 500;
     }
     if (this.y > this.canvasHeight - this.height) {
       this.y = this.canvasHeight - this.height;
+      this.isOnGround = true;
     }
 
-    this.y += this.velY;
+    this.velY += this.weight;
 
-    if (!this.isOnGround()) {
-      this.velY += this.weight;
-    } else {
-      this.velY = 0;
+    if (this.velX > 0) {
+      this.velX -= this.friction;
     }
-  }
-  isOnGround() {
-    return this.y >= this.canvasHeight - this.height;
+    if (this.velX < 0) {
+      this.velX += this.friction;
+    }
   }
 }

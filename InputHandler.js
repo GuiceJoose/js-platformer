@@ -1,27 +1,48 @@
 export default class InputHandler {
   constructor() {
-    this.keys = [];
-    window.addEventListener("keydown", (e) => {
+    this.keys = {
+      ArrowUp: {
+        pressed: false,
+        released: 0,
+      },
+      ArrowDown: {
+        pressed: false,
+      },
+      ArrowRight: {
+        pressed: false,
+      },
+      ArrowLeft: {
+        pressed: false,
+      },
+      w: {
+        pressed: false,
+      },
+    };
+    window.addEventListener("keydown", ({ key }) => {
+      console.log(this.keys.ArrowUp.disabled);
       if (
-        (e.key === "ArrowUp" ||
-          e.key === "ArrowDown" ||
-          e.key === "ArrowRight" ||
-          e.key === "ArrowLeft" ||
-          e.key === "w") &&
-        this.keys.indexOf(e.key) === -1
+        (key === "ArrowUp" ||
+          key === "ArrowDown" ||
+          key === "ArrowRight" ||
+          key === "ArrowLeft" ||
+          key === "w") &&
+        this.keys[key].pressed === false
       ) {
-        this.keys.push(e.key);
+        this.keys[key].pressed = true;
       }
     });
-    window.addEventListener("keyup", (e) => {
+    window.addEventListener("keyup", ({ key }) => {
       if (
-        e.key === "ArrowUp" ||
-        e.key === "ArrowDown" ||
-        e.key === "ArrowRight" ||
-        e.key === "ArrowLeft" ||
-        e.key === "w"
+        key === "ArrowUp" ||
+        key === "ArrowDown" ||
+        key === "ArrowRight" ||
+        key === "ArrowLeft" ||
+        key === "w"
       ) {
-        this.keys.splice(this.keys.indexOf(e.key), 1);
+        this.keys[key].pressed = false;
+        if (key === "ArrowUp") {
+          ++this.keys[key].released;
+        }
       }
     });
   }
