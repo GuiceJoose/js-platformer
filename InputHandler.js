@@ -3,7 +3,7 @@ export default class InputHandler {
     this.keys = {
       ArrowUp: {
         pressed: false,
-        released: 0,
+        released: 1,
       },
       ArrowDown: {
         pressed: false,

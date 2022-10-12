@@ -5,13 +5,13 @@ export default class Player {
     this.width = 50;
     this.height = 50;
     this.x = 0;
-    this.y = this.canvasHeight - this.height;
+    this.y = 500;
     this.velX = 0;
     this.velY = 0;
     this.isOnGround = true;
-    this.jumps = 0;
     this.weight = 1;
-    this.friction = 0.25;
+    this.friction = 0.95;
+    this.jumps = 0;
   }
   draw(context) {
     context.fillStyle = "white";
@@ -20,20 +20,20 @@ export default class Player {
   update(input) {
     // Input responses
     if (input.keys.ArrowRight.pressed === true) {
-      this.velX = 5;
+      this.velX += 0.5;
     }
     if (input.keys.ArrowLeft.pressed === true) {
-      this.velX = -5;
+      this.velX -= 0.5;
     }
 
     if (
       input.keys.ArrowUp.pressed === true &&
-      input.keys.ArrowUp.released === this.jumps &&
+      input.keys.ArrowUp.released > this.jumps &&
       this.isOnGround === true
     ) {
       this.isOnGround = false;
-      this.velY = -15;
-      ++this.jumps;
+      this.velY -= 15;
+      this.jumps = input.keys.ArrowUp.released;
     }
 
     if (input.keys.w.pressed === true) {
@@ -55,12 +55,6 @@ export default class Player {
     }
 
     this.velY += this.weight;
-
-    if (this.velX > 0) {
-      this.velX -= this.friction;
-    }
-    if (this.velX < 0) {
-      this.velX += this.friction;
-    }
+    this.velX = this.velX * this.friction;
   }
 }
