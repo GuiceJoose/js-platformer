@@ -49,10 +49,6 @@ export default class Player {
     } else if (this.x > 500) {
       this.x = 500;
     }
-    if (this.y > this.canvasHeight - this.height) {
-      this.y = this.canvasHeight - this.height;
-      this.isOnGround = true;
-    }
 
     this.velY += this.weight;
     this.velX = this.velX * this.friction;

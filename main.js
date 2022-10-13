@@ -1,3 +1,4 @@
+import Enemy from "./Enemy.js";
 import InputHandler from "./InputHandler.js";
 import Platform from "./Platform.js";
 import Player from "./Player.js";
@@ -11,11 +12,16 @@ window.addEventListener("load", () => {
   const groundSummer = document.createElement("img");
   groundSummer.src = "./art/groundSummer.png";
 
-  const input = new InputHandler();
-  const player = new Player(canvas.width, canvas.height);
+  let scrollDistance = 0;
+
+  let input = new InputHandler();
+  let player;
+  let enemy;
+  let platforms;
+
   const generateGround = () => {
     let groundTiles = [];
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 40; i++) {
       let platform = new Platform(
         groundSummer.width * i,
         canvas.height - groundSummer.height,
@@ -28,25 +34,11 @@ window.addEventListener("load", () => {
     return groundTiles;
   };
 
-  const platforms = generateGround();
-  // const platforms = [
-  //   new Platform(
-  //     200,
-  //     canvas.height - 100,
-  //     canvas.width,
-  //     canvas.height,
-  //     groundSummer
-  //   ),
-  //   new Platform(
-  //     1000,
-  //     canvas.height - 100,
-  //     canvas.width,
-  //     canvas.height,
-  //     groundSummer
-  //   ),
-  // ];
-
-  let scrollDistance = 0;
+  function init() {
+    player = new Player(canvas.width, canvas.height);
+    platforms = generateGround();
+    enemy = new Enemy();
+  }
 
   function animate() {
     requestAnimationFrame(animate);
@@ -59,8 +51,11 @@ window.addEventListener("load", () => {
     });
     player.draw(ctx);
     player.update(input);
+    enemy.draw(ctx);
+    enemy.update();
 
     platforms.forEach((platform) => {
+      //player playform collision detection
       if (
         player.y + player.height <= platform.y &&
         player.y + player.height + player.velY >= platform.y &&
@@ -70,15 +65,37 @@ window.addEventListener("load", () => {
         player.velY = 0;
         player.isOnGround = true;
       }
+      //enemy platform collision detection
+      if (
+        enemy.y + enemy.height <= platform.y &&
+        enemy.y + enemy.height + enemy.velY >= platform.y &&
+        enemy.x + enemy.width >= platform.x &&
+        enemy.x <= platform.x + platform.width
+      ) {
+        enemy.velY = 0;
+      }
+      if (
+        player.x + player.width >= enemy.x &&
+        player.y + player.height >= enemy.y &&
+        player.x <= enemy.x + enemy.width
+      ) {
+        console.log("you died");
+        init();
+      }
     });
 
     if (player.x >= 499) {
+      enemy.x -= player.velX;
       platforms.forEach((platform) => {
         platform.x -= player.velX;
         scrollDistance += player.velX;
       });
     }
+    if (player.y > canvas.height) {
+      console.log("you lose");
+      init();
+    }
   }
-
+  init();
   animate();
 });
