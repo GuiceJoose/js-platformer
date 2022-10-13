@@ -1,9 +1,9 @@
 export default class Enemy {
-  constructor() {
-    this.height = 50;
-    this.width = 50;
-    this.x = 1200;
-    this.y = 500;
+  constructor(x, y, height, width) {
+    this.height = height;
+    this.width = width;
+    this.x = x;
+    this.y = y;
     this.velX = -2;
     this.velY = 0;
     this.weight = 1;

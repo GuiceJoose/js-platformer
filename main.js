@@ -16,8 +16,8 @@ window.addEventListener("load", () => {
 
   let input = new InputHandler();
   let player;
-  let enemy;
-  let platforms;
+  let enemies = [];
+  let platforms = [];
 
   const generateGround = () => {
     let groundTiles = [];
@@ -34,10 +34,19 @@ window.addEventListener("load", () => {
     return groundTiles;
   };
 
+  const generateEnemies = () => {
+    let guys = [];
+    let enemy1 = new Enemy(800, 500, 50, 50);
+    let enemy2 = new Enemy(1200, 500, 50, 50);
+    let enemy3 = new Enemy(1300, 500, 50, 50);
+    guys.push(enemy1, enemy2, enemy3);
+    return guys;
+  };
+
   function init() {
     player = new Player(canvas.width, canvas.height);
     platforms = generateGround();
-    enemy = new Enemy();
+    enemies = generateEnemies();
   }
 
   function animate() {
@@ -46,13 +55,18 @@ window.addEventListener("load", () => {
       console.log("you win");
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     platforms.forEach((platform) => {
       platform.draw(ctx);
     });
+
+    enemies.forEach((enemy) => {
+      enemy.draw(ctx);
+      enemy.update();
+    });
+
     player.draw(ctx);
     player.update(input);
-    enemy.draw(ctx);
-    enemy.update();
 
     platforms.forEach((platform) => {
       //player playform collision detection
@@ -66,14 +80,20 @@ window.addEventListener("load", () => {
         player.isOnGround = true;
       }
       //enemy platform collision detection
-      if (
-        enemy.y + enemy.height <= platform.y &&
-        enemy.y + enemy.height + enemy.velY >= platform.y &&
-        enemy.x + enemy.width >= platform.x &&
-        enemy.x <= platform.x + platform.width
-      ) {
-        enemy.velY = 0;
-      }
+      enemies.forEach((enemy) => {
+        if (
+          enemy.y + enemy.height <= platform.y &&
+          enemy.y + enemy.height + enemy.velY >= platform.y &&
+          enemy.x + enemy.width >= platform.x &&
+          enemy.x <= platform.x + platform.width
+        ) {
+          enemy.velY = 0;
+        }
+      });
+    });
+
+    // player enemy collision detection
+    enemies.forEach((enemy) => {
       if (
         player.x + player.width >= enemy.x &&
         player.y + player.height >= enemy.y &&
@@ -85,10 +105,12 @@ window.addEventListener("load", () => {
     });
 
     if (player.x >= 499) {
-      enemy.x -= player.velX;
       platforms.forEach((platform) => {
         platform.x -= player.velX;
         scrollDistance += player.velX;
+      });
+      enemies.forEach((enemy) => {
+        enemy.x -= player.velX;
       });
     }
     if (player.y > canvas.height) {
