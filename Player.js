@@ -12,6 +12,7 @@ export default class Player {
     this.weight = 1;
     this.friction = 0.95;
     this.jumps = 0;
+    this.flapping = false;
   }
   draw(context) {
     context.fillStyle = "white";
@@ -20,10 +21,10 @@ export default class Player {
   update(input) {
     // Input responses
     if (input.keys.ArrowRight.pressed === true) {
-      this.velX += 0.5;
+      this.flapping ? (this.velX += 0.6) : (this.velX += 0.3);
     }
     if (input.keys.ArrowLeft.pressed === true) {
-      this.velX -= 0.5;
+      this.flapping ? (this.velX -= 0.6) : (this.velX -= 0.3);
     }
 
     if (
@@ -33,12 +34,15 @@ export default class Player {
     ) {
       this.isOnGround = false;
       this.velY -= 15;
+      this.flapping ? (this.weight = 0.35) : (this.weight = 1);
       this.jumps = input.keys.ArrowUp.released;
     }
 
     if (input.keys.w.pressed === true) {
-      this.weight = 0.35;
-    } else this.weight = 1;
+      this.flapping = true;
+    } else {
+      this.flapping = false;
+    }
 
     this.x += this.velX;
     this.y += this.velY;

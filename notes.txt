@@ -1,0 +1,7 @@
+Make peck animation to destroy blocks
+    -pecks down normally, forward if holding forward
+
+2 power up levels
+    base -> flaps to jump better
+    hen -> shoots eggs backwards
+
