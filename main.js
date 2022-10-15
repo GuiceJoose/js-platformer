@@ -99,8 +99,21 @@ window.addEventListener("load", () => {
         player.y + player.height >= enemy.y &&
         player.x <= enemy.x + enemy.width
       ) {
-        console.log("you died");
-        init();
+        if (
+          player.y + player.height - enemy.y >
+            player.x + player.width - enemy.x ||
+          player.y + player.height - enemy.y > enemy.x + enemy.width - player.x
+        ) {
+          console.log("you died");
+          init();
+        } else {
+          enemy.die();
+          if (input.keys.ArrowUp.pressed === true) {
+            player.isOnGround = true;
+            --player.jumps;
+          }
+          player.velY = -5;
+        }
       }
     });
 
