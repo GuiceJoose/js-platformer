@@ -65,6 +65,11 @@ window.addEventListener("load", () => {
       enemy.update();
     });
 
+    player.eggs.forEach((egg) => {
+      egg.draw(ctx);
+      egg.update();
+    });
+
     player.draw(ctx);
     player.update(input);
 
@@ -115,6 +120,21 @@ window.addEventListener("load", () => {
           player.velY = -5;
         }
       }
+    });
+    // enemy egg collision detection
+    enemies.forEach((enemy) => {
+      player.eggs.forEach((egg) => {
+        if (
+          egg.x + egg.width >= enemy.x &&
+          egg.x <= enemy.x + enemy.width &&
+          egg.y + egg.height >= enemy.y &&
+          egg.y <= enemy.y + enemy.height
+        ) {
+          console.log("hit");
+          enemy.die();
+          egg.break();
+        }
+      });
     });
 
     if (player.x >= 499) {

@@ -17,6 +17,9 @@ export default class InputHandler {
       w: {
         pressed: false,
       },
+      e: {
+        pressed: false,
+      },
     };
     window.addEventListener("keydown", ({ key }) => {
       console.log(this.keys.ArrowUp.disabled);
@@ -25,7 +28,8 @@ export default class InputHandler {
           key === "ArrowDown" ||
           key === "ArrowRight" ||
           key === "ArrowLeft" ||
-          key === "w") &&
+          key === "w" ||
+          key === "e") &&
         this.keys[key].pressed === false
       ) {
         this.keys[key].pressed = true;
@@ -37,7 +41,8 @@ export default class InputHandler {
         key === "ArrowDown" ||
         key === "ArrowRight" ||
         key === "ArrowLeft" ||
-        key === "w"
+        key === "w" ||
+        key === "e"
       ) {
         this.keys[key].pressed = false;
         if (key === "ArrowUp") {

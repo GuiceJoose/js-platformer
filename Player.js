@@ -1,3 +1,5 @@
+import Egg from "./Egg.js";
+
 export default class Player {
   constructor(canvasWidth, canvasHeight) {
     this.canvasWidth = canvasWidth;
@@ -13,18 +15,25 @@ export default class Player {
     this.friction = 0.95;
     this.jumps = 0;
     this.flapping = false;
+    this.eggs = [];
+    this.eggCooldown = 0;
+    this.direction = 1; // 1 = right, -1 = left
   }
   draw(context) {
-    context.fillStyle = "white";
+    this.direction === 1
+      ? (context.fillStyle = "white")
+      : (context.fillStyle = "grey");
     context.fillRect(this.x, this.y, this.width, this.height);
   }
   update(input) {
     // Input responses
     if (input.keys.ArrowRight.pressed === true) {
       this.flapping ? (this.velX += 0.6) : (this.velX += 0.3);
+      this.direction = 1;
     }
     if (input.keys.ArrowLeft.pressed === true) {
       this.flapping ? (this.velX -= 0.6) : (this.velX -= 0.3);
+      this.direction = -1;
     }
 
     if (
@@ -42,6 +51,15 @@ export default class Player {
       this.flapping = true;
     } else {
       this.flapping = false;
+    }
+
+    // egg creation
+    if (input.keys.e.pressed === true && this.eggCooldown <= 0) {
+      let egg = new Egg(this.x, this.y + this.height / 2, this.direction);
+      this.eggs.push(egg);
+      this.eggCooldown = 25;
+    } else {
+      --this.eggCooldown;
     }
 
     this.x += this.velX;
