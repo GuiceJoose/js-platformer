@@ -9,14 +9,6 @@ export default class Enemy {
     this.weight = 1;
   }
 
-  die() {
-    this.height = 0;
-    this.width = 0;
-    this.velX = 0;
-    this.velY = 0;
-    this.x = 0;
-    this.y = 0;
-  }
   draw(context) {
     context.fillStyle = "green";
     context.fillRect(this.x, this.y, this.width, this.height);

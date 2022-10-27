@@ -112,7 +112,7 @@ window.addEventListener("load", () => {
           console.log("you died");
           init();
         } else {
-          enemy.die();
+          enemies.splice(enemies.indexOf(enemy), 1);
           if (input.keys.ArrowUp.pressed === true) {
             player.isOnGround = true;
             --player.jumps;
@@ -131,8 +131,8 @@ window.addEventListener("load", () => {
           egg.y <= enemy.y + enemy.height
         ) {
           console.log("hit");
-          enemy.die();
-          egg.break();
+          enemies.splice(enemies.indexOf(enemy), 1);
+          player.eggs.splice(player.eggs.indexOf(egg), 1);
         }
       });
     });
